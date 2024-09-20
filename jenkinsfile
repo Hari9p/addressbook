@@ -1,7 +1,7 @@
 pipeline{
     agent any
     parameters {
-        string(name: 'Env', defaultValue: 'Test' , description 'env to deploy')
+        string(name:'Env', defaultValue:'Test' , description: 'env to deploy')
         booleanParam(name: 'executeTests', defaultValue: true, description: 'decide to run tc')
         choice(name: 'CHOICES', choices: ['1.1', '1.2', '1.3'] )
     }
