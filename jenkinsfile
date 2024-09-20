@@ -36,6 +36,11 @@ pipeline{
                     
                 }
             }
+            post{
+                always {
+                    'target/surefire-reports/*.xml'
+                }
+            }
         }
         stage('Package') {
             agent{label 'linux-slave2'}
