@@ -1,5 +1,5 @@
 pipeline{
-    agent any
+    agent none
     tools{
         jdk 'myjava'
         maven 'mymaven'
@@ -12,6 +12,7 @@ pipeline{
 
     stages{
         stage('compile') {
+            agent any
             steps {
                 script { echo "Compile the code"
                          echo "deploying to env: ${params.Env}"
@@ -22,6 +23,7 @@ pipeline{
         }
 
         stage('UnitTest') {
+            agent any
             when {
                 expression {
 
@@ -36,6 +38,7 @@ pipeline{
             }
         }
         stage('Package') {
+            agent{lable 'linux-slave2'}
             steps {
                 script { echo "package the code"
                          echo "packing the code version ${params.CHOICES}"
