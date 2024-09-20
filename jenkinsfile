@@ -37,5 +37,21 @@ pipeline{
                 }
             }
         }
+        stage('Deploy') {
+            input {
+
+            message "select the version to package"
+            ok "version selected"    
+            parameters{
+                choice(name: 'NEWVERSION', choices: ['3', '4', '5'] )
+            }
+            }
+            steps {
+                script { echo "package the code"
+                         echo "packing the code version ${params.CHOICES}"
+                    
+                }
+            }
+        }
     }
 }
