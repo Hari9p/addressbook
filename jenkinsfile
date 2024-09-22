@@ -56,7 +56,7 @@ pipeline{
                     
                          echo "package the code"
                  //     echo "packing the code version ${params.CHOICES}"
-                         sh "scp -o StrictHostKeyChecking=no service-config.sh ${DEV_SERVER}:/home/ec2-user"
+                         sh "scp -o StrictHostKeyChecking=no server-config.sh ${DEV_SERVER}:/home/ec2-user"
                          sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh'" 
 
                          }
