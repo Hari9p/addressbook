@@ -27,7 +27,7 @@ pipeline{
         }
 
         stage('UnitTest') {
-            agent {label 'linux_slave2'}
+            agent {label 'linux-slave2'}
            // agent any
             //when {
               //  expression {
