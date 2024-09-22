@@ -4,18 +4,22 @@ pipeline{
         jdk 'myjava'
         maven 'mymaven'
     }
-    parameters {
-        string(name:'Env', defaultValue:'Test' , description: 'env to deploy')
-        booleanParam(name: 'executeTests', defaultValue: true, description: 'decide to run tc')
-        choice(name: 'CHOICES', choices: ['1.1', '1.2', '1.3'] )
-    }
+    // parameters {
+        //string(name:'Env', defaultValue:'Test' , description: 'env to deploy')
+       // booleanParam(name: 'executeTests', defaultValue: true, description: 'decide to run tc')
+     //   choice(name: 'CHOICES', choices: ['1.1', '1.2', '1.3'] )
+   // }
+
+   environment {
+        DEV_SERVER = 'ec2-user@15.206.178.131'
+   }
 
     stages{
         stage('compile') {
             agent any
             steps {
                 script { echo "Compile the code"
-                         echo "deploying to env: ${params.Env}"
+                        // echo "deploying to env: ${params.Env}"
                          sh "mvn compile"
 
                 }
@@ -23,13 +27,14 @@ pipeline{
         }
 
         stage('UnitTest') {
+            agent {label 'linux_slave2'}
             agent any
-            when {
-                expression {
-
-                    params.executeTests == true
-                }
-            }
+            //when {
+              //  expression {
+//
+  //                  params.executeTests == true
+    //            }
+      //      }
             steps {
                 script { echo "Run the unit tests"
                 sh "mvn test"
@@ -43,13 +48,23 @@ pipeline{
             }
         }
         stage('Package') {
-            agent{label 'linux-slave2'}
+            
+            
             steps {
-                script { echo "package the code"
-                         echo "packing the code version ${params.CHOICES}"
-                         sh "mvn package"
+                script { 
+                sshagent(['DEV_SERVER_PACKING']) {
                     
-                }
+                         echo "package the code"
+                 //     echo "packing the code version ${params.CHOICES}"
+                         sh "scp -o StrictHostKeyChecking=no service-config.sh ${DEV_SERVER}:/home/ec2-user"
+                         sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh'" 
+
+                         }
+                        
+                }         
+                
+                    
+                
             }
         }
         stage('Deploy') {
@@ -63,7 +78,7 @@ pipeline{
             }
             steps {
                 script { echo "package the code"
-                         echo "packing the code version ${params.CHOICES}"
+                   //      echo "packing the code version ${params.CHOICES}"
                     
                 }
             }
