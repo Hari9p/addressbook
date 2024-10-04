@@ -12,6 +12,7 @@ pipeline{
 
    environment {
         DEV_SERVER = 'ec2-user@15.206.178.131'
+        IMAGE_NAME='hari9p/privaterepo'
    }
 
     stages{
@@ -54,11 +55,15 @@ pipeline{
                 script { 
                 sshagent(['DEV_SERVER_PACKING']) {
                     
+                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')])
                          echo "package the code"
                  //     echo "packing the code version ${params.CHOICES}"
                          sh "scp -o StrictHostKeyChecking=no server-config.sh ${DEV_SERVER}:/home/ec2-user"
-                         sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh'" 
+                         sh "ssh -o StrictHostKeyChecking=no ${DEV_SERVER} 'bash ~/server-config.sh ${IMAGE_NAME} ${BUILD_NUMBER}'" 
 
+                         sh "ssh ${DEV_SERVER} sudo docker login -u ${USERNAME} -p ${PASSWORD}"
+                         sh "ssh ${DEV_SERVER} sudo docker push ${IMAGENAME}:${BUILD_NUMBER}"
+                         sh "ssh ${DEV_SERVER} sudo docker run -P ${IMAGENAME}:${BUILD_NUMBER}"
                          }
                         
                 }         
