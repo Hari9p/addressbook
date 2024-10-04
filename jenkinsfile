@@ -11,7 +11,7 @@ pipeline{
    // }
 
    environment {
-        DEV_SERVER = 'ec2-user@15.206.178.131'
+        DEV_SERVER = 'ec2-user@172.31.8.204'
         IMAGE_NAME='hari9p/privaterepo'
    }
 
